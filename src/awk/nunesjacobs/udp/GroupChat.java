@@ -1,10 +1,10 @@
-package awk.nunesjacobs;
+package awk.nunesjacobs.udp;
 
 import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class GroupChat {
+class GroupChat {
 	private static final String TERMINATE = "Exit";
 	static String name;
 	static volatile boolean finished = false;
@@ -27,7 +27,7 @@ public class GroupChat {
 				// this on localhost only (For a subnet set it as 1)
 
 				socket.joinGroup(group);
-				Thread t = new Thread(new ReadThread(socket, group, port));
+				Thread t = new Thread(new ReReadThread(socket, group, port));
 
 				// Spawn a thread for reading messages
 				t.start();
@@ -65,14 +65,13 @@ public class GroupChat {
 	}
 }
 
-class ReadThread implements Runnable, ChatRecord {
+class ReReadThread implements Runnable {
 	private MulticastSocket socket;
 	private InetAddress group;
 	private int port;
 	private static final int MAX_LEN = 1000;
-	public ArrayList <ChatRecord> chatRecord = new ArrayList<>();
 
-	ReadThread(MulticastSocket socket, InetAddress group, int port) {
+	ReReadThread(MulticastSocket socket, InetAddress group, int port) {
 		this.socket = socket;
 		this.group = group;
 		this.port = port;
@@ -81,14 +80,13 @@ class ReadThread implements Runnable, ChatRecord {
 	@Override
 	public void run() {
 		while (!GroupChat.finished) {
-			byte[] buffer = new byte[ReadThread.MAX_LEN];
+			byte[] buffer = new byte[ReReadThread.MAX_LEN];
 			DatagramPacket datagram = new DatagramPacket(buffer, buffer.length, group, port);
 			String message;
 			try {
 				socket.receive(datagram);
 				message = new String(buffer, 0, datagram.getLength(), "UTF-8");
 				if (!message.startsWith(GroupChat.name))
-					setChatRecord(message);
 					System.out.println(message); // Auf den Display "printen"
 			} catch (IOException e) {
 				System.out.println("Socket closed!");
@@ -96,25 +94,4 @@ class ReadThread implements Runnable, ChatRecord {
 		}
 	}
 
-	@Override
-	public ArrayList<ChatRecord> getChatRecord() {
-		return chatRecord;
-	}
-
-	@Override
-	public void setChatRecord(String message) {
-		 try {
-			((Appendable) chatRecord).append(message);
-			printChatRecord();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	@Override
-	public void printChatRecord() {
-		System.out.println(Arrays.toString(chatRecord.toArray()));
-		
-	}
 }
