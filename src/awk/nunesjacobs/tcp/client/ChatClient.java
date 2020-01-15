@@ -11,6 +11,8 @@ import awk.nunesjacobs.tcp.server.ChatCommands;
 
 import org.apache.commons.lang3.StringUtils;
 
+// ====> https://www.youtube.com/watch?v=CqWorn8dR_A <=====
+
 public class ChatClient implements ChatCommands {
 	private final String serverName;
 	private final int serverPort;
