@@ -5,6 +5,8 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.Scanner;
 
+import awk.nunesjacobs.tcp.server.ChatCommands;
+
 class ChatClient extends ServerMain implements ChatCommands {
 
 	static volatile boolean exitFlag = false;

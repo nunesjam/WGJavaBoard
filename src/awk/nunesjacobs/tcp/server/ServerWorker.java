@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import awk.nunesjacobs.udp.ChatCommands;
-
 public class ServerWorker extends Thread implements ChatCommands {
 
 	private final Socket clientSocket;
@@ -53,14 +51,15 @@ public class ServerWorker extends Thread implements ChatCommands {
 					break;
 				} else if (cmd.equalsIgnoreCase(LOGIN)) {
 					handleLogin(outputStream, tokens);
-				} else if (cmd.equalsIgnoreCase(PRIVATEMESSAGE)) {
-					String[] msgToken = StringUtils.split(line,null, 3);
-					handlePrivateMessage(msgToken);
+				} else if (cmd.equalsIgnoreCase(MESSAGE)) {
+					String[] msgToken = StringUtils.split(line, null, 3);
+					handleMessages(msgToken);
 				} else if (cmd.equalsIgnoreCase(JOINGROUP)) {
 					handleGroupChatJoin(tokens);
-				}
-				else {
-					String msg = "<" + getLogin() +">"+ " " + line + "\n";
+				} else if (cmd.equalsIgnoreCase(LEAVEGROUP)) {
+					handleGroupChatLeave(tokens);
+				} else {
+					String msg = "<" + getLogin() + ">" + " " + line + "\n";
 					outputStream.write(msg.getBytes());
 				}
 			}
@@ -68,26 +67,42 @@ public class ServerWorker extends Thread implements ChatCommands {
 		clientSocket.close();
 	}
 
+	private void handleGroupChatLeave(String[] tokens) {
+		if (tokens.length > 1) {
+			String groupChatTopic = tokens[1];
+			groupChatTopicHashSet.remove(groupChatTopic);
+		}
+	}
+
 	public boolean isMemberOfCurrentTopic(String groupChatTopic) {
 		return groupChatTopicHashSet.contains(groupChatTopic);
 	}
-	
+
 	private void handleGroupChatJoin(String[] tokens) {
-		if (tokens.length > 1 ) {
+		if (tokens.length > 1) {
 			String groupChatTopic = tokens[1];
 			groupChatTopicHashSet.add(groupChatTopic);
-			
+
 		}
 	}
 
 	// format: "msg "login" msg
-	private void handlePrivateMessage(String[] tokens) throws IOException {
-		String sendTo = tokens[1];
+	private void handleMessages(String[] tokens) throws IOException {
+		String receipentOrGroup = tokens[1];
 		String msgBody = tokens[2];
+
+		boolean isItAGroupChat = receipentOrGroup.charAt(0) == '@';
+
 		List<ServerWorker> workerList = server.getWorkerList();
+
 		for (ServerWorker worker : workerList) {
-			if (sendTo.equalsIgnoreCase(worker.getLogin())) {
-				String msg = " msg from " + "<" + getLogin() +">" + " " + msgBody + "\n";
+			if (isItAGroupChat) {
+				if (worker.isMemberOfCurrentTopic(receipentOrGroup)) {
+					String msg = "msg " + receipentOrGroup + ": " + "<" + getLogin() + "> " + " " + msgBody + "\n";
+					worker.send(msg);
+				}
+			} else if (receipentOrGroup.equalsIgnoreCase(worker.getLogin())) {
+				String msg = " msg " + "<" + getLogin() + ">" + " " + msgBody + "\n";
 				worker.send(msg);
 			}
 		}
@@ -96,7 +111,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 	private void handleLogoff() throws IOException {
 		List<ServerWorker> workerList = server.getWorkerList();
 		// send other online users current users status
-		String onlineMsg = "offline " +"<" + getLogin() +">"+ "\n";
+		String onlineMsg = "offline " + "<" + getLogin() + ">" + "\n";
 		for (ServerWorker worker : workerList) {
 			if (!login.contentEquals(worker.getLogin())) {
 				worker.send(onlineMsg);
@@ -118,7 +133,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 
 				this.login = login;
 
-				outputStream.write(("success you're logged in: " + this.login + "\n").getBytes());
+				System.out.println("successfully logged in: " + this.login );
 
 				List<ServerWorker> workerList = server.getWorkerList();
 
@@ -140,19 +155,20 @@ public class ServerWorker extends Thread implements ChatCommands {
 					}
 				}
 			} else {
-				String msg = "nah u cant pass here \n";
+				String msg = "nah u cant park here \n";
 				outputStream.write(msg.getBytes());
+				System.err.println("Login failed for " + login);
 			}
 		}
 	}
 
 	private String getLogin() {
-		
+
 		return this.login;
 	}
 
 	private void send(String msg) throws IOException {
-		if (login != null) {
+		if (getLogin() != null) {
 			outputStream.write(msg.getBytes());
 		}
 	}
