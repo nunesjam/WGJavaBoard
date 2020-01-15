@@ -23,6 +23,7 @@ public class Server extends Thread {
 	@Override
 	public void run() {
 		try {
+			@SuppressWarnings("resource")
 			ServerSocket serverSocket = new ServerSocket(serverPort);
 			while (true) {
 				Socket clientSocket = serverSocket.accept();

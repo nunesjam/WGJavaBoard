@@ -36,25 +36,45 @@ public class ServerWorker extends Thread implements ChatCommands {
 	private void handleClientSocket() throws IOException, InterruptedException {
 
 		InputStream inputStream = clientSocket.getInputStream();
-		this.outputStream = clientSocket.getOutputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
+
+		this.outputStream = clientSocket.getOutputStream();
+
 		while ((line = reader.readLine()) != null) {
-			String[] tokens = StringUtils.split(line);
+			String[] tokens = StringUtils.split(line, null, 3);
+
 			if (tokens != null && tokens.length > 0) {
+
 				String cmd = tokens[0];
-				if (cmd.equalsIgnoreCase(TERMINATE)|| cmd.equalsIgnoreCase(LOGOFF)) {
+
+				if (cmd.equalsIgnoreCase(TERMINATE) || cmd.equalsIgnoreCase(LOGOFF)) {
 					handleLogoff();
 					break;
 				} else if (cmd.equalsIgnoreCase(LOGIN)) {
 					handleLogin(outputStream, tokens);
+				} else if (cmd.equalsIgnoreCase(MSG)) {
+					handlePrivateMessage(tokens);
 				} else {
-					String msg = "unknown " + cmd + "\n";
+					String msg = "unknown" + " " + line + "\n";
 					outputStream.write(msg.getBytes());
 				}
 			}
 		}
 		clientSocket.close();
+	}
+
+	// format: "msg "login" msg
+	private void handlePrivateMessage(String[] tokens) throws IOException {
+		String sendTo = tokens[1];
+		String msgBody = tokens[2];
+		List<ServerWorker> workerList = server.getWorkerList();
+		for (ServerWorker worker : workerList) {
+			if (sendTo.equalsIgnoreCase(worker.getLogin())) {
+				String msg = "msg from " + login + " " + msgBody + "\n";
+				worker.send(msg);
+			}
+		}
 	}
 
 	private void handleLogoff() throws IOException {
@@ -82,7 +102,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 
 				this.login = login;
 
-				System.out.println("SUCC youre logged in: " + this.login);
+				outputStream.write(("success you're logged in: " + this.login).getBytes());
 
 				List<ServerWorker> workerList = server.getWorkerList();
 
