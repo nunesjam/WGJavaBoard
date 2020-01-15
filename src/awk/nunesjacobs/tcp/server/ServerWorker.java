@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 	private final Server server;
 	private String login = null;
 	private OutputStream outputStream;
+	private HashSet<String> groupChatTopicHashSet = new HashSet<>();
 
 	public ServerWorker(Server server, Socket clientSocket) {
 		this.server = server;
@@ -36,16 +38,14 @@ public class ServerWorker extends Thread implements ChatCommands {
 	private void handleClientSocket() throws IOException, InterruptedException {
 
 		InputStream inputStream = clientSocket.getInputStream();
+		this.outputStream = clientSocket.getOutputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
 
-		this.outputStream = clientSocket.getOutputStream();
-
 		while ((line = reader.readLine()) != null) {
-			String[] tokens = StringUtils.split(line, null, 3);
+			String[] tokens = StringUtils.split(line);
 
 			if (tokens != null && tokens.length > 0) {
-
 				String cmd = tokens[0];
 
 				if (cmd.equalsIgnoreCase(TERMINATE) || cmd.equalsIgnoreCase(LOGOFF)) {
@@ -53,15 +53,31 @@ public class ServerWorker extends Thread implements ChatCommands {
 					break;
 				} else if (cmd.equalsIgnoreCase(LOGIN)) {
 					handleLogin(outputStream, tokens);
-				} else if (cmd.equalsIgnoreCase(MSG)) {
-					handlePrivateMessage(tokens);
-				} else {
-					String msg = "unknown" + " " + line + "\n";
+				} else if (cmd.equalsIgnoreCase(PRIVATEMESSAGE)) {
+					String[] msgToken = StringUtils.split(line,null, 3);
+					handlePrivateMessage(msgToken);
+				} else if (cmd.equalsIgnoreCase(JOINGROUP)) {
+					handleGroupChatJoin(tokens);
+				}
+				else {
+					String msg = "<" + getLogin() +">"+ " " + line + "\n";
 					outputStream.write(msg.getBytes());
 				}
 			}
 		}
 		clientSocket.close();
+	}
+
+	public boolean isMemberOfCurrentTopic(String groupChatTopic) {
+		return groupChatTopicHashSet.contains(groupChatTopic);
+	}
+	
+	private void handleGroupChatJoin(String[] tokens) {
+		if (tokens.length > 1 ) {
+			String groupChatTopic = tokens[1];
+			groupChatTopicHashSet.add(groupChatTopic);
+			
+		}
 	}
 
 	// format: "msg "login" msg
@@ -71,7 +87,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 		List<ServerWorker> workerList = server.getWorkerList();
 		for (ServerWorker worker : workerList) {
 			if (sendTo.equalsIgnoreCase(worker.getLogin())) {
-				String msg = "msg from " + login + " " + msgBody + "\n";
+				String msg = " msg from " + "<" + getLogin() +">" + " " + msgBody + "\n";
 				worker.send(msg);
 			}
 		}
@@ -80,7 +96,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 	private void handleLogoff() throws IOException {
 		List<ServerWorker> workerList = server.getWorkerList();
 		// send other online users current users status
-		String onlineMsg = "offline " + login + "\n";
+		String onlineMsg = "offline " +"<" + getLogin() +">"+ "\n";
 		for (ServerWorker worker : workerList) {
 			if (!login.contentEquals(worker.getLogin())) {
 				worker.send(onlineMsg);
@@ -102,7 +118,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 
 				this.login = login;
 
-				outputStream.write(("success you're logged in: " + this.login).getBytes());
+				outputStream.write(("success you're logged in: " + this.login + "\n").getBytes());
 
 				List<ServerWorker> workerList = server.getWorkerList();
 
@@ -131,7 +147,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 	}
 
 	private String getLogin() {
-
+		
 		return this.login;
 	}
 
