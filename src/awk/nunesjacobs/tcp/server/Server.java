@@ -9,7 +9,6 @@ import java.util.List;
 public class Server extends Thread {
 
 	private final int serverPort;
-	
 	private ArrayList<ServerWorker> workerList = new ArrayList <>();
 
 	public Server(int serverPort) {
@@ -23,7 +22,6 @@ public class Server extends Thread {
 	@Override
 	public void run() {
 		try {
-			@SuppressWarnings("resource")
 			ServerSocket serverSocket = new ServerSocket(serverPort);
 			while (true) {
 				System.out.println("About to accept client connection...");
@@ -38,5 +36,9 @@ public class Server extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
+	public void removeWorker(ServerWorker serverWorker) {
+        workerList.remove(serverWorker);
+    }
 
 }
