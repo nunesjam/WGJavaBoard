@@ -10,7 +10,11 @@ import java.io.IOException;
 
 public class LoginWindow extends JFrame implements IPandPort {
 	
-    private final ChatClient client;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final ChatClient client;
     JTextField loginField = new JTextField();
     JPasswordField passwordField = new JPasswordField();
     JButton loginButton = new JButton("Login");
@@ -45,7 +49,7 @@ public class LoginWindow extends JFrame implements IPandPort {
 
     private void doLogin() {
         String login = loginField.getText();
-        String password = passwordField.getText();
+        String password = String.valueOf(passwordField.getPassword());
 
         try {
             if (client.login(login, password)) {
