@@ -144,6 +144,8 @@ public class ServerWorker extends Thread implements ChatCommands {
 							String msg2 = "online " + worker.getLogin() + "\n";
 							send(msg2);
 						}
+					} else {
+						System.err.println("User is already signed in.");
 					}
 				}
 

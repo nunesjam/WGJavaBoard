@@ -8,12 +8,13 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import awk.nunesjacobs.tcp.server.ChatCommands;
+import awk.nunesjacobs.tcp.server.ServerData;
 
 import org.apache.commons.lang3.StringUtils;
 
 // ====> https://www.youtube.com/watch?v=CqWorn8dR_A <=====
 
-public class ChatClient implements ChatCommands {
+public class ChatClient implements ChatCommands, ServerData {
 	private final String serverName;
 	private final int serverPort;
 	private Socket socket;
@@ -30,7 +31,7 @@ public class ChatClient implements ChatCommands {
 	}
 
 	public static void main(String[] args) throws IOException {
-		ChatClient client = new ChatClient("localhost", 8818);
+		ChatClient client = new ChatClient(IP, PORT);
 
 		// register User agent that listens to everyone that goes online and offline
 		client.registerUserStatusListener(new UserStatusListener() {
