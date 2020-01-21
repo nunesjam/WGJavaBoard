@@ -37,7 +37,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 		String line;
 
 		while ((line = reader.readLine()) != null) {
-			String[] tokens = StringUtils.split(line, null, 3);
+			String[] tokens = StringUtils.split(line);
 
 			if (tokens != null && tokens.length > 0) {
 				String cmd = tokens[0];
@@ -50,7 +50,8 @@ public class ServerWorker extends Thread implements ChatCommands {
 				} else if (MESSAGE.equalsIgnoreCase(cmd)) {
 					handleMessages(tokens);
 				} else if (JOINGROUP.equalsIgnoreCase(cmd)) {
-					handleGroupChatJoin(tokens);
+					String[] tokensGroup = StringUtils.split(line, null, 3);
+					handleGroupChatJoin(tokensGroup);
 				} else if (LEAVEGROUP.equalsIgnoreCase(cmd)) {
 					handleGroupChatLeave(tokens);
 				} else {

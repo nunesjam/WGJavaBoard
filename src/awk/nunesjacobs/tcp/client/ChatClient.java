@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 import awk.nunesjacobs.tcp.IPandPort;
 import awk.nunesjacobs.tcp.server.ChatCommands;
-import awk.nunesjacobs.tcp.server.ServerData;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class ChatClient implements ChatCommands, IPandPort {
@@ -62,7 +60,7 @@ public class ChatClient implements ChatCommands, IPandPort {
 			// login
 			if (client.login("guest", "guest")) {
 				System.out.println("Login successful");
-				
+
 				client.msg("jeff", "hello World!");
 			} else {
 				System.err.println("Login invalid");
@@ -73,11 +71,11 @@ public class ChatClient implements ChatCommands, IPandPort {
 	public boolean login(String username, String password) throws IOException {
 		String loginMsg = "login " + username + " " + password;
 		serverOut.write(loginMsg.getBytes());
-		
+
 		// read line
 		String responseFromServer = bufferedIn.readLine();
 		System.out.println("Response from server: " + responseFromServer);
-		
+
 		if (responseFromServer.equalsIgnoreCase("ok login")) {
 			startMessageReader();
 			return true;
@@ -102,7 +100,7 @@ public class ChatClient implements ChatCommands, IPandPort {
 	}
 
 	private void readMessageLoop() {
-		
+
 		try {
 			String line;
 			while ((line = bufferedIn.readLine()) != null) {
@@ -130,7 +128,7 @@ public class ChatClient implements ChatCommands, IPandPort {
 			}
 		}
 	}
-	
+
 	public void msg(String sendTo, String msgBody) throws IOException {
 		String cmd = "msg" + sendTo + " " + msgBody + "\n";
 		serverOut.write(cmd.getBytes());
@@ -140,7 +138,7 @@ public class ChatClient implements ChatCommands, IPandPort {
 	private void handleMessage(String[] msgToken) {
 		String login = msgToken[1];
 		String msgBody = msgToken[2];
-		
+
 		for (MessageListener listener : messageListeners) {
 			listener.onMessage(login, msgBody);
 		}
@@ -159,7 +157,7 @@ public class ChatClient implements ChatCommands, IPandPort {
 			listener.online(login);
 		}
 	}
-	
+
 	public boolean connect() {
 		try {
 			this.socket = new Socket(serverName, serverPort);
