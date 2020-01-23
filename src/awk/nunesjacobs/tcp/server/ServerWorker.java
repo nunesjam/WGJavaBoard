@@ -48,7 +48,8 @@ public class ServerWorker extends Thread implements ChatCommands {
 				} else if (LOGIN.equalsIgnoreCase(cmd)) {
 					handleLogin(outputStream, tokens);
 				} else if (MESSAGE.equalsIgnoreCase(cmd)) {
-					handleMessages(tokens);
+					String[] tokensMessage = StringUtils.split(line, null, 3);
+					handleMessages(tokensMessage);
 				} else if (JOINGROUP.equalsIgnoreCase(cmd)) {
 					String[] tokensGroup = StringUtils.split(line, null, 3);
 					handleGroupChatJoin(tokensGroup);
@@ -86,9 +87,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 	private void handleMessages(String[] tokens) throws IOException {
 		String receipentOrGroup = tokens[1];
 		String msgBody = tokens[2];
-
 		boolean isItAGroupChat = receipentOrGroup.charAt(0) == '@';
-
 		List<ServerWorker> workerList = server.getWorkerList();
 		for (ServerWorker worker : workerList) {
 			if (isItAGroupChat) {
