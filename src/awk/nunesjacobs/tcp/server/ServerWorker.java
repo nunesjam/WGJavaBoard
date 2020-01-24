@@ -142,9 +142,10 @@ public class ServerWorker extends Thread implements ChatCommands {
 			if ((login.equals("guest") && password.equals("guest")
 					|| login.equals("jeff") && password.equals("jeff"))) {
 
-				String msg = "ok login \n";
+				String msg = "ok login\n";
 				outputStream.write(msg.getBytes());
 				outputStream.flush();
+				
 				this.login = login;
 				System.out.println("successfully logged in: " + this.login);
 
@@ -170,7 +171,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 					}
 				}
 			} else {
-				String msg = "nah Error login \n";
+				String msg = "nah Error login\n";
 				outputStream.write(msg.getBytes());
 				outputStream.flush();
 				System.err.println("Login failed for " + login);
