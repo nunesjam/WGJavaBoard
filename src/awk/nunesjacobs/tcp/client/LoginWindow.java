@@ -23,7 +23,7 @@ public class LoginWindow extends JFrame implements IPandPort {
         super("Login");
 
         this.client = new ChatClient(IP, PORT);
-        this.client.connect();
+        client.connect();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

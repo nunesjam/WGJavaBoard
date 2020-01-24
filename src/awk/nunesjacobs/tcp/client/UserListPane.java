@@ -15,9 +15,7 @@ import awk.nunesjacobs.tcp.IPandPort;
 
 public class UserListPane extends JPanel implements UserStatusListener,IPandPort {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private final ChatClient client;
 	private JList<String> userListUI;

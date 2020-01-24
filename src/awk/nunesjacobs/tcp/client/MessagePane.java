@@ -13,22 +13,19 @@ import javax.swing.JTextField;
 
 public class MessagePane extends JPanel implements MessageListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final ChatClient client;
 	private final String login;
 
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
-	private JList<String> messageList = new JList<>();
+	private JList<String> messageList = new JList<>(listModel);
 	private JTextField inputField = new JTextField();
 
 	public MessagePane(ChatClient client, String login) {
 		this.client = client;
 		this.login = login;
 
-		this.client.registerMessageListener(this);
+		client.registerMessageListener(this);
 
 		setLayout(new BorderLayout());
 		add(new JScrollPane(messageList), BorderLayout.CENTER);
@@ -40,7 +37,7 @@ public class MessagePane extends JPanel implements MessageListener {
 				try {
 					String msgBody = inputField.getText();
 					client.msg(login, msgBody);
-					listModel.addElement("You " + msgBody);
+					listModel.addElement("You: " + msgBody);
 					inputField.setText("");
 				} catch (IOException e1) {
 					e1.printStackTrace();
