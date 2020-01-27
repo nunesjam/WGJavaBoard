@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -48,9 +47,10 @@ public class MessagePane extends JPanel implements MessageListener {
 
 	@Override
 	public void onMessage(String fromLogin, String msgBody) {
-		if (login.equalsIgnoreCase(fromLogin)) {
+		if (!login.equalsIgnoreCase(fromLogin)) {
 			String line = fromLogin + ": " + msgBody;
 			listModel.addElement(line);
+
 		}
 	}
 

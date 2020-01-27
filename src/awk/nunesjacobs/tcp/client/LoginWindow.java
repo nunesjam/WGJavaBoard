@@ -54,7 +54,7 @@ public class LoginWindow extends JFrame implements IPandPort {
         try {
             if (client.login(login, password)) {
                 // bring up the user list window
-                UserListPane userListPane = new UserListPane(client);
+                UserListPane userListPane = new UserListPane(client,login);
                 JFrame frame = new JFrame("User List");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(400, 600);
