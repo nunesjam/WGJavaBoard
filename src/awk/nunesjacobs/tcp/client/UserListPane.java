@@ -100,6 +100,7 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 	@Override
 	public void onMessage(String fromLogin, String msgBody) {
 		try {
+			Notification nd = new Notification(msgBody, fromLogin);
 			nd.displayTray();
 		} catch (AWTException e) {
 			e.printStackTrace();
