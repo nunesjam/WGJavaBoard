@@ -9,10 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class LoginWindow extends JFrame implements IPandPort {
-	
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private final ChatClient client;
     JTextField loginField = new JTextField();
@@ -54,13 +51,13 @@ public class LoginWindow extends JFrame implements IPandPort {
         try {
             if (client.login(login, password)) {
                 // bring up the user list window
-                UserListPane userListPane = new UserListPane(client,login);
-                JFrame frame = new JFrame("User List");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(400, 600);
+            	   UserListPane userListPane = new UserListPane(client,login);
+                   JFrame frame = new JFrame("User List");
+                   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                   frame.setSize(500, 500);
 
-                frame.getContentPane().add(userListPane, BorderLayout.CENTER);
-                frame.setVisible(true);
+                   frame.getContentPane().add(userListPane, BorderLayout.CENTER);
+                   frame.setVisible(true);
 
                 setVisible(false);
             } else {

@@ -26,7 +26,6 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 		this.login = login;
 		this.client.registerUserStatusListener(this);
 		this.client.registerMessageListener(this);
-
 		userListModel = new DefaultListModel<>();
 		userListUI = new JList<>(userListModel);
 		setLayout(new BorderLayout());
@@ -38,12 +37,11 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 				if (e.getClickCount() > 1) {
 					String login = userListUI.getSelectedValue();
 					MessagePane messagePane = new MessagePane(client, login);
-
-					JFrame f = new JFrame("Message: " + login);
-					f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					f.setSize(500, 500);
-					f.getContentPane().add(messagePane, BorderLayout.CENTER);
-					f.setVisible(true);
+					JFrame frame = new JFrame("Message: " + login);
+					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					frame.setSize(500, 500);
+					frame.getContentPane().add(messagePane, BorderLayout.CENTER);
+					frame.setVisible(true);
 				}
 			}
 		});
@@ -52,24 +50,21 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 	public UserListPane(ChatClient client) {
 		this.client = client;
 		this.client.registerUserStatusListener(this);
-
 		userListModel = new DefaultListModel<>();
 		userListUI = new JList<>(userListModel);
 		setLayout(new BorderLayout());
 		add(new JScrollPane(userListUI), BorderLayout.CENTER);
-
 		userListUI.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
 					String login = userListUI.getSelectedValue();
 					MessagePane messagePane = new MessagePane(client, login);
-
-					JFrame f = new JFrame("Message: " + login);
-					f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					f.setSize(500, 500);
-					f.getContentPane().add(messagePane, BorderLayout.CENTER);
-					f.setVisible(true);
+					JFrame frame = new JFrame("Message: " + login);
+					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					frame.setSize(500, 500);
+					frame.getContentPane().add(messagePane, BorderLayout.CENTER);
+					frame.setVisible(true);
 				}
 			}
 		});
@@ -77,15 +72,12 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 
 	public static void main(String[] args) {
 		ChatClient client = new ChatClient(IP, PORT);
-
 		UserListPane userListPane = new UserListPane(client);
 		JFrame frame = new JFrame(" User List ");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 600);
-
 		frame.getContentPane().add(userListPane, BorderLayout.CENTER);
 		frame.setVisible(true);
-
 		if (client.connect()) {
 			try {
 				client.login("guest", "guest");
@@ -108,12 +100,11 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 	@Override
 	public void onMessage(String fromLogin, String msgBody) {
 		try {
-			Notification nd = new Notification(msgBody, fromLogin);
 			nd.displayTray();
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }
