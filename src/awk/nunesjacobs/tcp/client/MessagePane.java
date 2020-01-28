@@ -13,7 +13,6 @@ import javax.swing.JTextField;
 public class MessagePane extends JPanel implements MessageListener {
 
 	private static final long serialVersionUID = 1L;
-	private final ChatClient client;
 	private final String login;
 
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -21,7 +20,6 @@ public class MessagePane extends JPanel implements MessageListener {
 	private JTextField inputField = new JTextField();
 
 	public MessagePane(ChatClient client, String login) {
-		this.client = client;
 		this.login = login;
 
 		client.registerMessageListener(this);

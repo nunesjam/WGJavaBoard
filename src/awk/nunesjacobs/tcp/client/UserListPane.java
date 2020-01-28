@@ -17,13 +17,11 @@ public class UserListPane extends JPanel implements UserStatusListener, IPandPor
 
 	private static final long serialVersionUID = 1L;
 	private final ChatClient client;
-	private String login;
 	private JList<String> userListUI;
 	private DefaultListModel<String> userListModel;
 
 	public UserListPane(ChatClient client, String login) {
 		this.client = client;
-		this.login = login;
 		this.client.registerUserStatusListener(this);
 		this.client.registerMessageListener(this);
 		userListModel = new DefaultListModel<>();
