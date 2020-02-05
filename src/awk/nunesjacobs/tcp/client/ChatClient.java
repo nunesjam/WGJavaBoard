@@ -46,7 +46,7 @@ public class ChatClient implements ChatCommands, IPandPort {
 		client.registerMessageListener(new MessageListener() {
 			@Override
 			public void onMessage(String fromLogin, String msgBody) {
-				System.out.println("Yout got a message from <" + fromLogin + "> ==> " + msgBody);
+				System.out.println("You got a message from <" + fromLogin + "> ==> " + msgBody);
 
 			}
 		});

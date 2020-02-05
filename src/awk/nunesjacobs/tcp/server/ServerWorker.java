@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import awk.nunesjacobs.tcp.database.InsertQuery;
+
 public class ServerWorker extends Thread implements ChatCommands {
 
 	private final Socket clientSocket;
@@ -97,16 +99,25 @@ public class ServerWorker extends Thread implements ChatCommands {
 		String msgBody = tokens[2];
 		boolean isItAGroupChat = receipentOrGroup.charAt(0) == '@';
 		List<ServerWorker> workerList = server.getWorkerList();
-		
+
 		for (ServerWorker worker : workerList) {
 			if (isItAGroupChat) {
 				if (worker.isMemberOfCurrentTopic(receipentOrGroup)) {
 					String msg = "msg " + receipentOrGroup + ": " + "<" + getLogin() + "> " + " " + msgBody + "\n";
+					//DATABASE INSERT
+					InsertQuery insertstmnt = new InsertQuery(msgBody, this.login, receipentOrGroup);
+					insertstmnt.insert();
+					
 					worker.send(msg);
 				}
 			} else {
 				if (receipentOrGroup.equalsIgnoreCase(worker.getLogin())) {
 					String msg = " msg " + "<" + this.login + ">" + " " + msgBody + "\n";
+					
+				//DATABASE INSERT
+					InsertQuery insertstmnt = new InsertQuery(msgBody, this.login, receipentOrGroup);
+					insertstmnt.insert();
+					
 					worker.send(msg);
 				}
 			}
@@ -145,7 +156,7 @@ public class ServerWorker extends Thread implements ChatCommands {
 				String msg = "ok login\n";
 				outputStream.write(msg.getBytes());
 				outputStream.flush();
-				
+
 				this.login = login;
 				System.out.println("successfully logged in: " + this.login);
 
