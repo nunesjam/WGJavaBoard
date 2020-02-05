@@ -20,7 +20,7 @@ public class SelectQuery {
 
 			while (result.next()) {
 				System.out.println(
-						result.getInt("id") + " | " + result.getString("msgbody") + " | " + result.getString("login")+ " | " + result.getString("receipent")+ " | " + result.getString("sent_date"));
+						result.getString("id") + " | " + result.getString("msgbody") + " | " + result.getString("login")+ " | " + result.getString("receipent")+ " | " + result.getString("sent_date"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace(System.out);

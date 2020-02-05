@@ -24,7 +24,7 @@ public class InsertQuery {
 			Class.forName("org.hsqldb.jdbc.JDBCDriver");
 			con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/weegeedeebee", "SA", "");
 			stmt = con.createStatement();
-			stmt.executeUpdate(String.format("INSERT INTO chatHistory_tbl VALUES (%s,'%s', '%s', '%s', NOW())",uniqueID.strip(), msgbody.strip(),login.strip(),receipent.strip()));
+			stmt.executeUpdate(String.format("INSERT INTO chatHistory_tbl VALUES ('%s','%s', '%s', '%s', NOW())",uniqueID.strip(), msgbody.strip(),login.strip(),receipent.strip()));
 			con.commit();
 		} catch (Exception e) {
 			e.printStackTrace(System.out);

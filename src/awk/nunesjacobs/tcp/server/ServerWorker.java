@@ -104,7 +104,8 @@ public class ServerWorker extends Thread implements ChatCommands {
 			if (isItAGroupChat) {
 				if (worker.isMemberOfCurrentTopic(receipentOrGroup)) {
 					String msg = "msg " + receipentOrGroup + ": " + "<" + getLogin() + "> " + " " + msgBody + "\n";
-					//DATABASE INSERT
+					
+				//DATABASE INSERT
 					InsertQuery insertstmnt = new InsertQuery(msgBody, this.login, receipentOrGroup);
 					insertstmnt.insert();
 					
