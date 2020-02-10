@@ -8,7 +8,8 @@ public class WeeGeeDeeBee {
 	public static void main(String[] args) {
 
 		Connection con = null;
-
+		// Connect
+		//java -classpath lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:hsqldb/WeeGeeDB --dbname.0 weegeedeebee
 		try {
 			// Registering the HSQLDB JDBC driver
 			Class.forName("org.hsqldb.jdbc.JDBCDriver");
