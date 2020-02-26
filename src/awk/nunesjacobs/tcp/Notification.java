@@ -1,4 +1,4 @@
-package awk.nunesjacobs.tcp.client;
+package awk.nunesjacobs.tcp;
 
 import java.awt.*;
 import java.awt.TrayIcon.MessageType;

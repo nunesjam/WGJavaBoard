@@ -11,6 +11,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import awk.nunesjacobs.tcp.IPandPort;
+import awk.nunesjacobs.tcp.Notification;
 
 public class UserListPane extends JPanel implements UserStatusListener, IPandPort, MessageListener {
 
